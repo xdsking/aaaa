@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="../CDN/lib/ol/v3.14.2/css/ol.css">
+    <style type="text/css" rel="stylesheet">
+        html body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        #map {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+        }
+
+        .ol-attribution a {
+            color: red;
+        }
+    </style>
+    <script src="../CDN/lib/ol/v3.14.2/build/ol.js"></script>
+    <script src="../CDN/lib/jQuery/jQuery-1.11.1.js"></script>
+    <script>
+        $(function () {
+            new ol.Map({
+                target: 'map',
+                layers: [
+                    new ol.layer.Tile({
+                        title: "Global Imagery",
+                        source: new ol.source.TileWMS({
+                            url: 'http://maps.opengeo.org/geowebcache/service/wms',
+                            params: {LAYERS: 'bluemarble', VERSION: '1.1.1'}
+                        })
+                    })
+                ],
+                view: new ol.View({
+                    projection: 'EPSG:4326',
+                    center: [0, 0],
+                    zoom: 0,
+                    maxResolution: 0.703125
+                })
+            });
+        });
+    </script>
+</head>
+<body>
+<div id="map"></div>
+</body>
+</html>

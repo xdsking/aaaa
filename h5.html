@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<!-- width=26.667, height=20.000 -->
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+
+<title>PP匠</title>
+<meta name="description" content="非常好玩的H5">
+
+
+<script>
+    var REM = 12;
+</script>
+<style>
+    html {
+        height: 100%;
+        width: 100%;
+        font-size: 12px;
+        overflow: hidden;
+    }
+
+    body {
+        background: #eee;
+        font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+        font-size: 14px;
+        color: #000;
+        margin: 0 auto;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        user-select: none;
+        -webkit-user-select: none;
+        position: relative;
+        overflow: hidden;
+    }
+
+    #main {
+        width: 26.667rem;
+        height: 20.000rem;
+        position: relative;
+    }
+
+    .swiper-container {
+        width: 26.667rem;
+        height: 20.000rem;
+    }
+
+    .swiper-slide {
+        font-size: 18px;
+        background: #fff;
+
+        overflow: hidden;
+        /* Center slide text vertically */
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: -webkit-flex;
+        display: flex;
+        -webkit-box-pack: center;
+        -ms-flex-pack: center;
+        -webkit-justify-content: center;
+        justify-content: center;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        -webkit-align-items: center;
+        align-items: center;
+    }
+
+    #loading {
+        width: 100%;
+        height: 100%;
+        background: #000;
+        position: absolute;
+        z-index: 10000;
+        left: 0;
+        top: 0;
+
+        text-align: center;
+        transition: opacity 1s;
+        -webkit-transition: opacity 1s;
+
+    }
+
+    .hide {
+        display: none;
+    }
+
+    .fade {
+        opacity: 0;
+    }
+
+    #loading-bar {
+        position: relative;
+        height: 2px;
+        background: #FFFFFF;
+        width: 20%;
+        margin: 0 auto;
+        top: 45%;
+        border-radius: 1px;
+        overflow: hidden;
+    }
+
+    #loading-progress {
+        width: 100%;
+        height: 100%;
+        background: #B8CC41;
+        transform-origin: top left;
+        transform: scaleX(0);
+        -webkit-transform: scaleX(0);
+        -webkit-transform-origin: top left;
+        transition: transform 0.5s;
+        -webkit-transition: -webkit-transform 0.5s;
+    }
+
+    #logo {
+        position: relative;
+        display: block;
+        margin: 0 auto;
+        top: 40%;
+    }
+
+    #banner {
+        position: absolute;
+        bottom: 10%;
+        color: white;
+        width: 100%;
+        text-align: center;
+    }
+
+    .rotated {
+        -webkit-transform: rotate(90deg);
+        transform: rotate(90deg);
+    }
+</style>
+<script>
+    var stageWidth = 26.667 * 12;
+    var stageHeight = 20.000 * 12;
+</script>
+<script>
+    var needRotate = false;
+    // var screenWidth = document.documentElement.clientWidth; var screenHeight = document.documentElement.clientHeight;
+    var screenWidth = document.documentElement.clientWidth;
+    var screenHeight = document.documentElement.clientHeight;
+    window.isDesktop = false;
+    //var main = document.getElementById("main");
+    function calculate(setREM) {
+        var screenR = screenHeight / screenWidth;
+        var stageR = stageHeight / stageWidth;
+
+        var REM = 12;
+        var FONTRatio = REM / 320;
+        var main_transforms = [];
+
+        needRotate = (screenR - 1) * (stageR - 1) < 0;
+        var dreamWidth = screenWidth;
+        if (!needRotate) {
+            //先设置rem达到放大的效果,再居中
+            dreamWidth = Math.max(screenWidth, screenHeight / stageR);
+
+            //横轴居中
+            main_transforms.push("translateX(-" + (dreamWidth - screenWidth) / 2 + "px)");
+
+        } else {
+            //rotate: 横屏竖图 or 横图竖屏
+            if (screenR > stageR) {
+                //竖屏横图: 先计算rem, 再平移 再旋转
+                dreamWidth = Math.max(screenHeight, screenWidth / stageR);
+
+                //居中
+                main_transforms.push("translate(" + (screenWidth - dreamWidth) / 2 + "px, " + dreamWidth / 2 * (1 - stageR) + "px)");
+                //旋转
+                main_transforms.push("rotate(90deg)");
+            } else {
+                //横屏竖图: 先计算Rem, 再平移， 再向右旋转90度,
+                dreamWidth = Math.max(screenHeight, screenWidth / stageR);
+
+                //居中
+                main_transforms.push("translate(" + dreamWidth / 2 * (stageR - 1) + "px," + (screenHeight / 2 - dreamWidth * stageR / 2) + "px)");
+
+                //旋转
+                main_transforms.push("rotate(-90deg)");
+            }
+        }
+
+        // desktop
+        if (needRotate && screenR < 1 && screenWidth > 768) {
+            dreamWidth = 480;
+            main_transforms.length = 0;
+            window.isDesktop = true;
+        }
+
+        //根据DreamWidth设置rem
+        if (setREM) {
+            var fontEl = document.createElement('style');
+            document.documentElement.firstElementChild.appendChild(fontEl);
+            window.REM = dreamWidth * FONTRatio;
+            fontEl.innerHTML = 'html{font-size:' + dreamWidth * FONTRatio + 'px!important;}';
+        }
+
+        return main_transforms;
+    }
+    var mainTrans = calculate(true);
+
+    window.initialPageCorrect = !needRotate;
+</script>
+<script>
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = "//hm.baidu.com/hm.js?c1840d0e46c50207e1c4b51a00b28605";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+</head>
+<body>
+
+<div id='main'>
+    <div id='loading'>
+        <div id='banner'>ppj.io 一键把PPT发布为H5</div>
+
+    </div>
+</div>
+<script>
+    //block wx black background
+    document.body.addEventListener("touchmove", function (e) {
+        e.preventDefault();
+    }, false);
+
+    var main = document.getElementById("main");
+    //根据transforms 设置 main
+    if (mainTrans.length > 0) {
+        main.style.webkitTransform = main.style.transform = mainTrans.join(" ");
+    }
+
+    if (isDesktop) {
+        main.style.margin = "0 auto"
+    }
+
+    window.addEventListener("orientationchange", function () {
+        //location.reload();
+        var t = screenWidth;
+        screenWidth = screenHeight;
+        screenHeight = t;
+        main.style.webkitTransform = main.style.transform = calculate().join(" ");
+
+        setTimeout(function () {
+            screenWidth = document.documentElement.clientWidth;
+            screenHeight = document.documentElement.clientHeight;
+
+            if (((screenHeight / screenWidth - 1) * (stageHeight / stageWidth - 1) > 0) && !initialPageCorrect) {
+                var href = window.location.href;
+                if (href.indexOf("?") >= 0) {
+                    href += "&reload=1";
+                } else {
+                    href += "?reload=1";
+                }
+
+                window.location.href = href;
+                return;
+            }
+
+            if (needRotate) {
+                swiper.setTouchDirectionReverse(true);
+            } else {
+                swiper.setTouchDirectionReverse(false);
+            }
+
+            main.style.webkitTransform = main.style.transform = calculate().join(" ");
+        }, 1000);
+    })
+</script>
+
+<!--
+    <script>
+        if (needRotate){
+            var pages = document.body;//document.getElementById("pages")
+            pages.className += " rotated" 
+            pages.style.webkitTransformOrigin = pages.style.transformOrigin = [compareWidth / 2, compareWidth / 2].map(function(i){
+                return i + "px"        
+            }).join(" ");
+
+            pages.style.webkitTransform = pages.style.transform = "rotate(90deg) translateX(" + dreamOffset + "px)"
+        }
+    </script>
+    -->
+
+<!--<script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+<script src="http://h5.ppj.io/common/js/loader_febad7.js"></script>
+
+
+<script async src='http://ppj.io/tracks/visit?pid=623'></script>-->
+
+<!--<script>
+    var swiper = null;
+    function initPage() {
+        var config = {"mode": "ppt", "transition": {"autoAdvance": 1, "clickAdvance": true, "duration": 0.7, "effect": "fade", "overrideName": "p:transition"}};
+        var swiperConfig = {
+            lazyLoading: true,
+            onInit: function (swiper) {
+                //console.log("!!", swiper.activeIndex)
+
+                window.frame = {
+
+                    enableClickAdvance: function () {
+                        swiper.unlockSwipes()
+                    },
+                    disableClickAdvance: function () {
+
+                        swiper.lockSwipes()
+                    },
+                    nextSlide: function (i, time) {
+                        i = i || (swiper.activeIndex + 1)
+                        /*
+                         swiper.destroy(true, true);
+
+                         $("#slide-" + i).css("transform", "translate(" + i* -960 + "px)");
+
+                         config.direction = i % 2 ?  "horizontal" : "vertical"
+                         swiper = new Swiper('.swiper-container', config);
+                         swiper.slideTo(i,0) 
+                         $("#slide-" + i).css("transform", "");
+                         */
+
+                        var t = window.slides[i] && window.slides[i].transition
+                        if (t && t.effect == "none") {
+                            time = 0;
+                        }
+                        swiper.slideTo(i, time)
+                    }
+
+                }
+
+
+                window.slides.map(function (s, k) {
+                    initSlide(k);
+                })
+                playSlide(swiper.activeIndex)
+            },
+            onSlideChangeStart: function (swiper) {
+                //console.log("!!", swiper.activeIndex, swiper)
+                playSlide(swiper.activeIndex)
+                stopSlide(swiper.previousIndex)
+            }
+        }
+
+        var effectMap = {
+            "none": "slide",
+            "slide": "slide",
+            "cube": "cube",
+            "slide-3d": "cube",
+            "fade": "fade"
+        }
+        var defaultDirection = config.direction == "h5" ? "vertical" : "horizontal";
+        swiperConfig.direction = defaultDirection;
+        if (config.transition) {
+            swiperConfig.effect = effectMap[config.transition.effect];
+            var direction = config.transition.direction || defaultDirection;
+            /*
+             if (needRotate){
+             direction = { "vertical" : "horizontal", "horizontal" : "vertical" }[direction];
+             }
+             */
+
+            swiperConfig.direction = direction;
+
+            if (config.transition.effect == "none") {
+                //swiperConfig.speed = 0;
+            }
+        }
+        swiperConfig.slideDirection = (stageHeight / stageWidth > 1 ? "vertical" : "horizontal");
+        swiper = new Swiper('.swiper-container', swiperConfig);
+
+        if (!window.isDesktop && needRotate) {
+            swiper.setTouchDirectionReverse(true);
+        }
+
+
+        function initSlide(i) {
+            window.slides[i].init()
+        }
+
+        function playSlide(i) {
+            window.slides[i].restart()
+            window.currentMain = window.slides[i].window.main
+        }
+
+        function stopSlide(i) {
+            window.slides[i].pause()
+        }
+    }
+
+</script>-->
+</body>
+</html>
