@@ -13,10 +13,16 @@
 
         #map {
             position: fixed;
-            width: 100%;
+            width: 50%;
             height: 100%;
         }
-
+        #map1 {
+            position: fixed;
+            right: 0;
+            width: 50%;
+            height: 100%;
+            border-left: 1px solid;
+        }
         /*比例尺样式*/
         /*.ol-scale-line, .ol-scale-line:not([ie8andbelow]) {
             background: black;
@@ -61,27 +67,30 @@
                     })
                 ])
             });
-            var feature = {
-                class: "someClass",
-                get: function (arg) {
-                    return this[arg];
-                }};
-            var ss = aa.style(feature);
-            $("#reSetZoom").click(function(){
-                map.setView(new ol.View({
+            var  map1=new ol.Map({
+                layers: [
+                    new ol.layer.Tile({source: new ol.source.OSM()})
+                ],
+                view: new ol.View({
                     center: [0, 0],
-                    zoom: 6
-                }));
+                    zoom: 5
+                }),
+                target: 'map1'
+            });
+            map.on('moveend', function(evt){
+                var view=evt.map.getView();
+                var zoom=view.getZoom();
+                var center=view.getCenter();
+                var view1=map1.getView();
+                view1.setCenter(center);
+                view1.setZoom(zoom);
             });
         });
     </script>
 </head>
 <body>
 <div id="map"></div>
+<div id="map1"></div>
 <div id="scale-line" class="scale-line"></div>
-<div style="position: absolute;top: 0;right: 0;">
-    <button id="reSetZoom">重设比例尺</button>
-    <button id="other">其他</button>
-</div>
 </body>
 </html>
