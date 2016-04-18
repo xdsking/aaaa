@@ -95,7 +95,7 @@
             var content = document.getElementById('popup-content');
             var closer = document.getElementById('popup-closer');
 
-            var overlay = new ol.Overlay(/** @type {olx.OverlayOptions} */ ({
+            var overlay = new ol.Overlay(({
                 element: container,
                 autoPan: true,
                 autoPanAnimation: {
@@ -108,9 +108,23 @@
                 closer.blur();
                 return false;
             };
+            var source = new ol.source.Vector({
+                url: 'data/layers/7day-M2.5.json',
+                format: new ol.format.GeoJSON()
+            });
             var map = new ol.Map({
                 layers: [
-                    new ol.layer.Tile({source: new ol.source.OSM()})
+                    new ol.layer.Tile({source: new ol.source.OSM()}),
+                    new ol.layer.Vector({
+                        title: 'Earthquakes',
+                        source: source,
+                        style: new ol.style.Style({
+                            image: new ol.style.Icon({
+                                src: "images/1-1.png",
+                                anchor: [0.5, 1]
+                            })
+                        })
+                    })
                 ],
                 view: new ol.View({
                     center: [0, 0],
@@ -129,10 +143,51 @@
                 ])
             });
             map.on("singleclick", function (evt) {
-                var coordinate = evt.coordinate;
-                content.innerHTML = '<p>You clicked here:</p><code>' + '</code>';
-                overlay.setPosition(coordinate);
-            })
+
+                var feature = map.forEachFeatureAtPixel(evt.pixel,
+                        function (feature) {
+                            return feature;
+                        });
+                if (feature) {
+                    var coordinate = evt.coordinate;
+                    coordinate=feature.getGeometry().getCoordinates();
+                    mpixel=map.getPixelFromCoordinate(coordinate);
+                    var properties = feature.getProperties();
+                    content.innerHTML = properties.summary || "";
+                    overlay.setOffset([0,-34]);
+                    overlay.setPosition(coordinate);
+                }
+            });
+            var target = map.getTarget(), curFeatures = [];
+            var jTarget = typeof target === "string" ? $("#" + target) : $(target);
+            $(map.getViewport()).on('mousemove', function (e) {
+                var pixel = map.getEventPixel(e.originalEvent);
+                var feature = map.forEachFeatureAtPixel(pixel, function (feature, layer) {
+                    return feature;
+                });
+                if (feature) {
+                    jTarget.css("cursor", "pointer");
+                    feature.setStyle(new ol.style.Style({
+                        image: new ol.style.Icon({
+                            src: "images/1-2.png",
+                            anchor: [0.5, 1]
+                        })
+                    }));
+                    curFeatures.push(feature);
+                } else {
+                    jTarget.css("cursor", "");
+                    $.each(curFeatures, function (index, curFeature) {
+                        curFeature.setStyle(new ol.style.Style({
+                            image: new ol.style.Icon({
+                                src: "images/1-1.png",
+                                anchor: [0.5, 1]
+                            })
+                        }));
+
+                    });
+                    curFeatures = [];
+                }
+            });
         });
     </script>
 </head>
