@@ -149,9 +149,8 @@
                             return feature;
                         });
                 if (feature) {
-                    var coordinate = evt.coordinate;
-                    coordinate=feature.getGeometry().getCoordinates();
-                    mpixel=map.getPixelFromCoordinate(coordinate);
+                    //var coordinate = evt.coordinate;
+                    var coordinate=feature.getGeometry().getCoordinates();
                     var properties = feature.getProperties();
                     content.innerHTML = properties.summary || "";
                     overlay.setOffset([0,-34]);
