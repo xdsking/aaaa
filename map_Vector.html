@@ -25,28 +25,58 @@
     <script src="../CDN/lib/jQuery/jQuery-1.11.1.js"></script>
     <script>
         $(function () {
-            new ol.Map({
+            var map = new ol.Map({
                 target: 'map',
                 layers: [
-                    new ol.layer.Tile({
-                        title: "Global Imagery",
-                        source: new ol.source.TileWMS({
-                            url: 'http://maps.opengeo.org/geowebcache/service/wms',
-                            params: {LAYERS: 'bluemarble', VERSION: '1.1.1'}
-                        })
-                    })
+                    new ol.layer.Tile({source: new ol.source.OSM()})
                 ],
                 view: new ol.View({
                     projection: 'EPSG:4326',
                     center: [0, 0],
-                    zoom: 0,
+                    zoom: 5,
                     maxResolution: 0.703125
                 })
+            });
+            var mapEventHandle={
+                _handles:[],
+                regEvent:function(map,type,listener,handle){
+                    if(type!=""||type!=null){
+                        map.on(type,listener);
+                        _handles.push({
+                            type:type,
+                            listener:listener,
+                            handle:handle
+                        });
+                    }
+                },
+                removeEvent:function(map,type,listener){
+
+                },
+                deactivateEvent:function(map,type,listener){
+
+                },
+                activateEvent:function(map,type,listener){
+
+                }
+            };
+            fun1=function(){
+
+            };
+            fun2=function(){
+
+            };
+            map.on("click", fun1);
+            map.on("click", fun2);
+            $("#removeClick").click(function(){
+                map.un("click",fun2);
             });
         });
     </script>
 </head>
 <body>
 <div id="map"></div>
+<div style="position: fixed;top: 0;right: 0;">
+    <button id="removeClick">移除事件</button>
+</div>
 </body>
 </html>
