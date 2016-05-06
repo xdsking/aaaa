@@ -1,0 +1,72 @@
+﻿<html>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>wmts example</title>
+    <head>
+        <link rel="stylesheet" type="text/css" href="../CDN/lib/ol/v3.14.2/css/ol.css">
+        <style rel="stylesheet">
+            *{
+                margin: 0;
+                padding: 0;
+                overflow: hidden;
+            }
+        </style>
+        <script src="../CDN/lib/ol/v3.14.2/build/ol-debug.js"></script>
+        <script src="../CDN/lib/jQuery/jQuery-1.11.1.js"></script>
+        <script src="js/conf_4490.js"></script>
+        <script type="text/javascript">
+            var map;
+            function jsonpCallback(data){
+                var vectorSource = new ol.source.Vector({
+                    features:(new ol.format.GeoJSON()).readFeatures(data)
+                });
+                var fill = new ol.style.Fill({
+                    color: 'rgba(255,255,255,0.4)'
+                });
+                var stroke = new ol.style.Stroke({
+                    color: '#3399CC',
+                    width: 1.25
+                });
+                var style=new ol.style.Style({
+                    image: new ol.style.Circle({
+                        fill: fill,
+                        stroke: stroke,
+                        radius: 2
+                    }),
+                    fill: fill,
+                    stroke: stroke
+                });
+                var imageStyle=new ol.style.Style({
+                    image: new ol.style.Icon({
+                        src: "images/1-3.png",
+                        anchor: [0.5, 1]
+                    })
+                });
+                var vector = new ol.layer.Vector({
+                    source: vectorSource,
+                    style: style
+                });
+                map.addLayer(vector);
+            }
+            $(function(){
+               init_wmts();
+                $.ajax({
+                    url: "http://dt.yuhang.gov.cn/geocloud/wfs",
+                    data:{
+                        typename: "yhmap:poi",
+                        request: "GetFeature",
+                        service: "WFS",
+                       /* FILTER: str,*/
+                        outputFormat: "text/javascript",
+                        format_options: "callback:jsonpCallback",
+                        version: "1.1.0"
+                    },
+                    dataType: "jsonp"
+                });
+            });
+        </script>
+    </head>
+    <body onload="">
+        <div id="map" style="position:absolute;width:100%;height:100%;"></div>
+        
+    </body>
+</html>
