@@ -51,16 +51,21 @@
                init_wmts();
                 $.ajax({
                     url: "http://dt.yuhang.gov.cn/geocloud/wfs",
+                    /*contentType:"application/x-www-form-urlencoded;charset=UTF-8",*/
                     data:{
                         typename: "yhmap:poi",
                         request: "GetFeature",
                         service: "WFS",
-                       /* FILTER: str,*/
+                        FILTER: "<Filter><PropertyIsEqualTo><PropertyName>FCODE</PropertyName><Literal>140309</Literal></PropertyIsEqualTo></Filter>",
+                        /*FILTER: "<Filter><PropertyIsEqualTo><PropertyName>STYLENAME</PropertyName><Literal>企事业单位</Literal></PropertyIsEqualTo></Filter>",*/
                         outputFormat: "text/javascript",
                         format_options: "callback:jsonpCallback",
                         version: "1.1.0"
                     },
-                    dataType: "jsonp"
+                    dataType: "jsonp"/*,
+                    beforeSend:function(data1){
+                        data1.setRequestHeader("Content-Type","text/javascript;charset=UTF-8");
+                    }*/
                 });
             });
         </script>
