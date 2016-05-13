@@ -1,0 +1,67 @@
+﻿<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>wmts example</title>
+<head>
+    <link rel="stylesheet" type="text/css" href="../CDN/lib/ol/v3.14.2/css/ol.css">
+    <style rel="stylesheet">
+        * {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        #map {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        #opPane {
+            position: absolute;
+            right: 0;
+            z-index: 100;
+        }
+    </style>
+    <script src="../CDN/lib/ol/v3.14.2/build/ol-debug.js"></script>
+    <script src="../CDN/lib/jQuery/jQuery-1.11.1.js"></script>
+    <script src="js/conf_4490.js"></script>
+    <script type="text/javascript">
+        var map, ly;
+        var addWMSLayer = function () {
+            ly = new ol.layer.Tile({
+                source: new ol.source.TileWMS({
+                    params: {
+                        'LAYERS': "yhmap:tra_net_ln",
+                        'FORMAT': 'image/png',
+                        'STYLES': "tra_zhugandao" || "",
+                        'VERSION': "1.1.1"
+                    },
+                    url: "http://dt.yuhang.gov.cn/geocloud/wms"
+                })
+            });
+            map.addLayer(ly);
+            map.on('singleclick', function (evt) {
+                var view = map.getView(), viewResolution = view.getResolution(),
+                        viewResolution = view.getResolution(), projection = view.projection_;
+                var url = ly.getSource().getGetFeatureInfoUrl(
+                        evt.coordinate, viewResolution, projection, {
+                            'INFO_FORMAT': "application/json"
+                        }
+                );
+            });
+        };
+        $(function () {
+            init_wmts();
+            $("#addWMSLayer").click(addWMSLayer);
+        });
+    </script>
+</head>
+<body onload="">
+<div id="map">
+    <div id="opPane">
+        <button id="addWMSLayer">添加WMS</button>
+    </div>
+</div>
+
+</body>
+</html>
