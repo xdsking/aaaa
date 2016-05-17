@@ -50,9 +50,22 @@
                 );
             });
         };
+        var regPointerMove = function () {
+            map.on("pointermove", function (evt) {
+                if (evt.dragging) {
+                    return;
+                }
+                var pixel = map.getEventPixel(evt.originalEvent);
+                var hit = map.forEachLayerAtPixel(pixel, function () {
+                    return true;
+                });
+                map.getTargetElement().style.cursor = hit ? 'pointer' : '';
+            });
+        };
         $(function () {
             init_wmts();
             $("#addWMSLayer").click(addWMSLayer);
+            $("#regPointerMove").click(regPointerMove);
         });
     </script>
 </head>
@@ -60,6 +73,7 @@
 <div id="map">
     <div id="opPane">
         <button id="addWMSLayer">添加WMS</button>
+        <button id="regPointerMove">注册pointermove</button>
     </div>
 </div>
 
