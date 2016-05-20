@@ -11,7 +11,7 @@ ol.proj.addProjection(projection);
 projection.getMetersPerUnit = function () {
     return 2 * Math.PI * 6378137 / 360;
 };
-ol.proj.projections_['urn:ogc:def:crs:EPSG::4490'] = projection;
+//ol.proj.projections_['urn:ogc:def:crs:EPSG::4490'] = projection;
 ///////////////////////////////////////////////////////////////////////////////
 
 var projectionExtent = projection.getExtent();

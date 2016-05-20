@@ -56,16 +56,23 @@
                         typename: "yhmap:poi",
                         request: "GetFeature",
                         service: "WFS",
-                        FILTER: "<Filter><PropertyIsEqualTo><PropertyName>FCODE</PropertyName><Literal>140309</Literal></PropertyIsEqualTo></Filter>",
+                        FILTER: "<Filter>" +
+                                "<PropertyIsEqualTo><PropertyName>FCODE</PropertyName><Literal>140309</Literal></PropertyIsEqualTo>" +
+                                '<Intersects><PropertyName>the_geom</PropertyName><gml:Polygon xmlns:gml="http://www.opengis.net/gml"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>119.96040344238281,30.409126281738285 119.9652099609375,30.36655426025391 120.00846862792969,30.37479400634766 119.96040344238281,30.409126281738285</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></Intersects>'+
+                                "</Filter>",
                         /*FILTER: "<Filter><PropertyIsEqualTo><PropertyName>STYLENAME</PropertyName><Literal>企事业单位</Literal></PropertyIsEqualTo></Filter>",*/
                         outputFormat: "text/javascript",
                         format_options: "callback:jsonpCallback",
-                        version: "1.1.0"
+                        version: "1.0.0"
                     },
                     dataType: "jsonp"/*,
                     beforeSend:function(data1){
                         data1.setRequestHeader("Content-Type","text/javascript;charset=UTF-8");
                     }*/
+                });
+                map.on("singleclick", function (evt) {
+                    console.log(evt.coordinate);
+
                 });
             });
         </script>
