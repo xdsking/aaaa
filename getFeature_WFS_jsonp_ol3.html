@@ -47,8 +47,33 @@
             });
             map.addLayer(vector);
         }
+        var getdata=function(){
+            getdataCallback=function(data){
+                debugger;
+            };
+            $.ajax({
+                url: "http://dt.yuhang.gov.cn/geocloud/wfs",
+                /*contentType: "application/x-www-form-urlencoded;charset=UTF-8",*/
+                data: {
+                    typename: "yhmap:bou_py",
+                    request: "GetFeature",
+                    service: "WFS",
+                    FILTER: '<Filter xmlns:ogc="http://www.opengis.net/ogc" xmlns:gml="http://www.opengis.net/gml">' +
+                            '<PropertyIsEqualTo><PropertyName>FEATUREGUI</PropertyName><Literal>2ab9af9fdaeb4a119860951e7eecfb9a</Literal></PropertyIsEqualTo>' +
+                            '</Filter>',
+                    outputFormat: "text/javascript",
+                    format_options: "callback:getdataCallback",
+                    version: "1.0.0"
+                },
+                dataType: "jsonp"
+            });
+        };
         $(function () {
             init_wmts();
+            $("#getdata").click(function(){
+                getdata();
+            });
+            getdata();
             $.ajax({
                 url: "http://dt.yuhang.gov.cn/geocloud/wfs",
                 /*contentType: "application/x-www-form-urlencoded;charset=UTF-8",*/
@@ -77,6 +102,8 @@
 </head>
 <body onload="">
 <div id="map" style="position:absolute;width:100%;height:100%;"></div>
-
+<div style="position: fixed;top:0;right: 0">
+    <button id="getdata">获取行政区数据</button>
+</div>
 </body>
 </html>
