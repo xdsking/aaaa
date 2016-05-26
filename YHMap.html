@@ -36,7 +36,6 @@
                         'STYLES': "tra_zhugandao" || "",
                         'VERSION': "1.1.1"
                     },
-                    crossOrigin: 'anonymous',
                     url: "http://dt.yuhang.gov.cn/geocloud/wms"
                 })
             });
@@ -63,10 +62,28 @@
                 map.getTargetElement().style.cursor = hit ? 'pointer' : '';
             });
         };
+        var addGDLayer=function(){
+            var projection = ol.proj.get('EPSG:4326');
+            var GDLayer=new ol.layer.Tile({
+                source: new ol.source.XYZ({
+                    projection: projection,
+                    urls:[
+                        //style[6,7,8]
+                        "https://webst01.is.autonavi.com/appmaptile?style=7&x={x}&y={y}&z={z}",
+                        "https://webst02.is.autonavi.com/appmaptile?style=7&x={x}&y={y}&z={z}",
+                        "https://webst03.is.autonavi.com/appmaptile?style=7&x={x}&y={y}&z={z}",
+                        "https://webst04.is.autonavi.com/appmaptile?style=7&x={x}&y={y}&z={z}"
+                    ],
+                    wrapX: true
+                })
+            });
+            map.addLayer(GDLayer);
+        };
         $(function () {
             init_wmts();
             $("#addWMSLayer").click(addWMSLayer);
             $("#regPointerMove").click(regPointerMove);
+            $("#addGDLayer").click(addGDLayer);
         });
     </script>
 </head>
@@ -74,6 +91,7 @@
 <div id="map">
     <div id="opPane">
         <button id="addWMSLayer">添加WMS</button>
+        <button id="addGDLayer">添加高德</button>
         <button id="regPointerMove">注册pointermove</button>
     </div>
 </div>
