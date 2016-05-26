@@ -85,12 +85,18 @@
         .ol-popup-closer:after {
             content: "✖";
         }
+        button{
+            cursor: pointer;
+        }
+        .show{
+            background-color: #FFFFAA;
+        }
     </style>
     <script type="application/javascript" src="../CDN/lib/ol/v3.14.2/build/ol-debug.js"></script>
     <script type="application/javascript" src="../CDN/lib/jQuery/jQuery-1.11.1.js"></script>
     <script type="application/javascript" src="js/test.js"></script>
     <script type="application/javascript">
-        var map;
+        var map, tileArcGISRestbyExtent = null,tileArcGISRestbyXYZ=null;
         var initBaseMap = function () {
             map = new ol.Map({
                 layers: [
@@ -106,21 +112,43 @@
                 console.log(evt);
             })
         };
-        var addTileArcGISRest = function () {
+        var addTileArcGISRestbyExtent = function () {
             //EPSG:3857
+            if(tileArcGISRestbyExtent){
+                tileArcGISRestbyExtent.setVisible(!tileArcGISRestbyExtent.getVisible());
+                return;
+            }
             var url = "http://www.arcgisonline.cn/ArcGIS/rest/services/ChinaOnlineCommunity/MapServer";
-            var tileArcGISRestLat = yer = new ol.layer.Tile({
-                extent: [12109154.020937623, 4053665.8117906805, 12146034.887085222, 4078202.097870222],
+            tileArcGISRestbyExtent = yer = new ol.layer.Tile({
+                /* extent: [12109154.020937623, 4053665.8117906805, 12146034.887085222, 4078202.097870222],*/
                 source: new ol.source.TileArcGISRest({
                     url: url
                 })
             });
-            map.addLayer(tileArcGISRestLat);
+            map.addLayer(tileArcGISRestbyExtent);
+        };
+        var addTileArcGISRestbyXYZ = function () {
+            //EPSG:3857
+            if(tileArcGISRestbyXYZ){
+                tileArcGISRestbyXYZ.setVisible(!tileArcGISRestbyXYZ.getVisible());
+                return;
+            }
+            tileArcGISRestbyXYZ = yer = new ol.layer.Tile({
+                source: new ol.source.XYZ({
+                    url: 'http://cache1.arcgisonline.cn/ArcGIS/rest/services/ChinaOnlineCommunity/MapServer/tile/{z}/{y}/{x}',
+                })
+            });
+            map.addLayer(tileArcGISRestbyXYZ);
         };
         $(function () {
             initBaseMap();
-            $("#addTileArcGISRest").click(function () {
-                addTileArcGISRest();
+            $("#addTileArcGISRestbyExtent").click(function () {
+                $(this).toggleClass("show");
+                addTileArcGISRestbyExtent();
+            });
+            $("#addTileArcGISRestbyXYZ").click(function () {
+                $(this).toggleClass("show");
+                addTileArcGISRestbyXYZ();
             });
         });
     </script>
@@ -128,7 +156,8 @@
 <body>
 <div id="map"></div>
 <div style="position: fixed;top: 0;right: 0;">
-    <button id="addTileArcGISRest">TileArcGISRest</button>
+    <button id="addTileArcGISRestbyExtent" title="按范围请求TileArcGISRest">REST(EXTENT)</button>
+    <button id="addTileArcGISRestbyXYZ" title="按行列请求TileArcGISRest">REST(XYZ)</button>
 </div>
 </body>
 </html>
