@@ -28,12 +28,22 @@
     <script type="text/javascript">
         var map, ly;
         var addWMSLayer = function () {
+            /*ly = new ol.layer.Tile({
+                source: new ol.source.TileWMS({
+                    params: {
+                        'layers': "yhmap:tra_net_ln",
+                        'format': 'image/png',
+                        'STYLES': "tra_zhugandao" || "",
+                        'VERSION': "1.1.1"
+                    },
+                    url: "http://dt.yuhang.gov.cn/geocloud/wms"
+                })
+            });*/
             ly = new ol.layer.Tile({
                 source: new ol.source.TileWMS({
                     params: {
-                        'LAYERS': "yhmap:tra_net_ln",
-                        'FORMAT': 'image/png',
-                        'STYLES': "tra_zhugandao" || "",
+                        'layers': "YuHang:yh_tianditu_img",
+                        'format': 'image/png',
                         'VERSION': "1.1.1"
                     },
                     url: "http://dt.yuhang.gov.cn/geocloud/wms"

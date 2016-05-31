@@ -25,33 +25,52 @@
     <script src="../CDN/lib/jQuery/jQuery-1.11.1.js"></script>
     <script>
         /*var projection = ol.proj.get('EPSG:4326');*/
+        var map,baseMap1,baseMap2;
         var projection = ol.proj.get('EPSG:3857');
         $(function () {
-            var map = new ol.Map({
+            baseMap1 = new ol.layer.Tile({
+                source: new ol.source.XYZ({
+                    projection: projection,
+                    urls: [
+                        //style[6,7,8]
+                        "https://webst01.is.autonavi.com/appmaptile?style=7&x={x}&y={y}&z={z}",
+                        "https://webst02.is.autonavi.com/appmaptile?style=7&x={x}&y={y}&z={z}",
+                        "https://webst03.is.autonavi.com/appmaptile?style=7&x={x}&y={y}&z={z}",
+                        "https://webst04.is.autonavi.com/appmaptile?style=7&x={x}&y={y}&z={z}"
+                    ],
+                    wrapX: true
+                }),
+                isBaseMap:true
+            });
+            baseMap2 = new ol.layer.Tile({
+                source: new ol.source.XYZ({
+                    projection: projection,
+                    urls: [
+                        //style[6,7,8]
+                        "https://webst01.is.autonavi.com/appmaptile?style=7&x={x}&y={y}&z={z}",
+                        "https://webst02.is.autonavi.com/appmaptile?style=7&x={x}&y={y}&z={z}",
+                        "https://webst03.is.autonavi.com/appmaptile?style=7&x={x}&y={y}&z={z}",
+                        "https://webst04.is.autonavi.com/appmaptile?style=7&x={x}&y={y}&z={z}"
+                    ],
+                    wrapX: true
+                }),
+                isBaseMap:false
+            });
+            map = new ol.Map({
                 target: 'map',
-                layers: [
-                    new ol.layer.Tile({
-                        source: new ol.source.XYZ({
-                            projection: projection,
-                            urls:[
-                                    //style[6,7,8]
-                                "https://webst01.is.autonavi.com/appmaptile?style=7&x={x}&y={y}&z={z}",
-                                "https://webst02.is.autonavi.com/appmaptile?style=7&x={x}&y={y}&z={z}",
-                                "https://webst03.is.autonavi.com/appmaptile?style=7&x={x}&y={y}&z={z}",
-                                "https://webst04.is.autonavi.com/appmaptile?style=7&x={x}&y={y}&z={z}"
-                            ],
-                            wrapX: true
-                        })
-                    })
-                ],
                 view: new ol.View({
                     /*center: [108.94704937934875,-53.4952586889267],*/
-                    center: [12129376.392233318,4061420.2885937835],
+                    center: [12129376.392233318, 4061420.2885937835],
                     projection: projection,
                     zoom: 15,
                     minZoom: 1,
-                    maxZoom:20
+                    maxZoom: 20
                 })
+            });
+            map.addLayer(baseMap1);
+            map.on("click",function(){
+                baseMap2.getProperties().hasOwnProperty("isBaseMap");//return true
+                ol.layer.Tile.prototype.isPrototypeOf(baseMap2);//return true
             });
             var addTileArcGISRest = function () {
                 //EPSG:3857
