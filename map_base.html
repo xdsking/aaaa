@@ -86,7 +86,7 @@
         content: "✖";
     }
 </style>
-<script type="application/javascript" src="../CDN/lib/ol/v3.14.2/build/ol-debug.js"></script>
+<script type="application/javascript" src="../CDN/lib/ol/v3.14.2/build/ol.js"></script>
 <script type="application/javascript" src="../CDN/lib/jQuery/jQuery-1.11.1.js"></script>
 <script type="application/javascript" src="js/test.js"></script>
 <script type="application/javascript">
@@ -109,7 +109,7 @@
             return false;
         };
         var source = new ol.source.Vector({
-            url: 'data/layers/7day-M2.5.json',
+            url: 'data/7day-M2.5.json',
             format: new ol.format.GeoJSON()
         });
         var map = new ol.Map({
