@@ -41,7 +41,7 @@
                                 show: true,
                                 textStyle: {
                                     fontWeight: "bold",
-                                    fontSize:14
+                                    fontSize: 14
                                 }
                             }
                         },
@@ -61,14 +61,18 @@
                 ],
                 visualMap: {
                     min: 0,
-                    max: 2500,
+                    max: 1000,
                     left: 'left',
                     top: 'bottom',
                     text: ['高', '低'],
                     calculable: true,
-                    show: false
+                    show: false,
+                    color: ['orangered', 'yellow', 'lightskyblue']//'#121122', 'rgba(3,4,5,0.4)', 'red'
                 }
             }, true);
+            chart.on("click", function (params) {
+                debugger;
+            });
         });
     </script>
 </head>

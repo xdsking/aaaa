@@ -110,11 +110,12 @@
         };
         var source = new ol.source.Vector({
             url: 'data/7day-M2.5.json',
-            format: new ol.format.GeoJSON()
+            format: new ol.format.GeoJSON(),
+            wrapX:false
         });
         var map = new ol.Map({
             layers: [
-                new ol.layer.Tile({source: new ol.source.OSM()}),
+                new ol.layer.Tile({source: new ol.source.OSM({wrapX:false})}),
                 new ol.layer.Vector({
                     title: 'Earthquakes',
                     source: source,
@@ -128,7 +129,8 @@
             ],
             view: new ol.View({
                 center: [0, 0],
-                zoom: 5
+                zoom: 5,
+                minZoom:2
             }),
             overlays: [overlay],
             target: 'map',
